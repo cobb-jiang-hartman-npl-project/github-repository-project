@@ -43,6 +43,7 @@ def get_repos(number_of_pages:int):
     for page in range(0,number_of_pages):
         url= f'https://github.com/search?o=desc&p={page}&q=stars%3A%3E1&s=forks&type=Repositories'
         repos += get_repo_names_from_one_page(url)
+        time.sleep(5)
     return repos
 
 def remove_first_slash(repos):
@@ -130,6 +131,6 @@ def scrape_github_data() -> List[Dict[str, str]]:
 
 
 if __name__ == "__main__":
-    REPOS =create_list_of_repos(150)
+    REPOS =create_list_of_repos(30)
     data = scrape_github_data()
     json.dump(data, open("data.json", "w"), indent=1)
