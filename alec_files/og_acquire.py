@@ -14,10 +14,6 @@ import os
 import json
 from typing import Dict, List, Optional, Union, cast
 import requests
-import pandas as pd 
-import numpy as np
-from bs4 import BeautifulSoup
-import re
 
 from env import github_token, github_username
 
@@ -28,34 +24,11 @@ from env import github_token, github_username
 # TODO: Add your github username to your env.py file under the variable `github_username`
 # TODO: Add more repositories to the `REPOS` list below.
 
-def get_repo_names_from_one_page(url):
-    headers = {'User-Agent': 'Codeup Data Science'} 
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    items = soup.find_all('a', class_='v-align-middle')
-    repos=[]
-    for item in items:
-        repos.append(item.get('href'))
-    return repos
-
-def get_repos(number_of_pages:int):
-    repos=[]
-    for page in range(0,number_of_pages):
-        url= f'https://github.com/search?o=desc&p={page}&q=stars%3A%3E1&s=forks&type=Repositories'
-        repos += get_repo_names_from_one_page(url)
-    return repos
-
-def remove_first_slash(repos):
-    for i,repo in enumerate(repos):
-        repos[i]=re.sub(r'^/', '', repo)
-    return repos
-
-def create_list_of_repos(number_of_pages:int):
-    repos = get_repos(number_of_pages)
-    repos = remove_first_slash(repos)
-    return repos   
-
-REPOS = create_list_of_repos(150)
+REPOS = [
+    "gocodeup/codeup-setup-script",
+    "gocodeup/movies-application",
+    "torvalds/linux",
+]
 
 headers = {"Authorization": f"token {github_token}", "User-Agent": github_username}
 
