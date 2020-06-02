@@ -21,6 +21,8 @@ def split_repo_data(df, test_size=.2, train_size=.8, random_state=56):
     This function takes in a DataFrame and returns a train and test DataFrame for exploration and modeling.
     I would like to stratify by language, but we need to get more than one observation per language in order to do so.
     This will work for now.
+
+    TODO: Stratify or bin to remove stratification necessity
     """
     
     # call train_test_split on the DataFrame

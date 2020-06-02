@@ -63,7 +63,7 @@ def lemmatize(list_of_tokens: list) -> list:
 
 def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
     """
-    This function accepts a list of strings (lemmas) and returns a list after removing stopwords.
+    This function accepts a list of strings (lemmas) and returns a list and string after removing stopwords.
     Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
     """
@@ -115,6 +115,9 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     
     # creating cleaned column in dictionary
     dictionary["clean_readme_contents"] = string_sans_stopwords
+
+    # quantify lemmas
+
     
     return dictionary
 
@@ -134,7 +137,8 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     exclude_stopwords: Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
 
-    TODO: Write resultant DataFrame to disk.
+    TODO: DataFrame should only include readmes who have at least 10 words aka remove outliers
+    TODO: Write resultant DataFrame to disk
     """
     
     # read data.json into a DataFrame
@@ -151,6 +155,9 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
 
     # mask DataFrame to only include observations where the language is not null
     df = df[df.language.isna() == False]
+
+    # remove outliers using mask
+
 
     # reset DataFrame index
     df.reset_index(inplace=True)
