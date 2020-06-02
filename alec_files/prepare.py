@@ -12,7 +12,6 @@ import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 
-import og_acquire as og_ac
 import acquire as ac
 
 def basic_clean(string: str) -> str:
@@ -29,7 +28,7 @@ def basic_clean(string: str) -> str:
                 .decode("utf-8", "ignore")
     
     # replace anything that is not a letter, number, whitespace or a single quote.
-    string = re.sub(r"[^a-z0-9\s]", "", string)
+    string = re.sub(r"[^a-z0-9\s']", "", string)
     
     return string
 
