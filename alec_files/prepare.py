@@ -14,6 +14,8 @@ from nltk.corpus import stopwords
 
 import acquire as ac
 
+additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"]
+
 def basic_clean(string: str) -> str:
     """
     This function accepts a string and returns the string after applying some basic text cleaning to each word.
@@ -130,11 +132,11 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     dictionary["clean_readme_contents"] = string_sans_stopwords
 
     # quantify lemmas
-    dictionary["len_of_clean_readme_contents"] = quantify_lemmas(lemmas_sans_stopwords)
+    dictionary["len_of_clean_readme_contents"] = len(lemmas_sans_stopwords)
     
     return dictionary
 
-def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"], exclude_stopwords=[]):
+def wrangle_readme_data(extra_stopwords=additional_stopwords, exclude_stopwords=[]):
     """
     This function does the following:
     1. Reads the data.json file into a pandas DataFrame
