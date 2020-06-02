@@ -123,9 +123,6 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     # running lemmatize function on readme_tokens
     readme_lemmas = lemmatize(readme_tokens)
     
-    # additional_stopwords variable
-    additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"]
-
     # running remove_stopwords on readme_lemmas
     lemmas_sans_stopwords, string_sans_stopwords = remove_stopwords(readme_lemmas, extra_stopwords=extra_stopwords, exclude_stopwords=exclude_stopwords)
     
@@ -137,7 +134,7 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     
     return dictionary
 
-def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
+def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"], exclude_stopwords=[]):
     """
     This function does the following:
     1. Reads the data.json file into a pandas DataFrame
@@ -145,15 +142,15 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
     3. Iterates over the list_of_dictionaries object using a list comprehension calling the `prep_readme` function on each dictionary
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
     5. Masks DataFrame to only include observations where the language is not null
-    6. Resets DataFrame index
-    7. Drops original index column
-    8. Returns the resultant DataFrame
+    6. Masks DataFrame to exclude lower outliers
+    7. Resets DataFrame index
+    8. Drops original index column
+    9. Returns the resultant DataFrame
     
     Parameters:
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     exclude_stopwords: Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
 
-    TODO: DataFrame should only include readmes who have at least 10 words aka remove outliers
     TODO: Write resultant DataFrame to disk
     """
     
