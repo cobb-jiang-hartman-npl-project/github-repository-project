@@ -1,6 +1,7 @@
 import unicodedata
 import re
 import json
+import pandas as pd
 
 import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
@@ -38,3 +39,8 @@ def prepare_text(original:str):
     lemmatized_text=lemmatize(tokenized_text)
     prepared_text = remove_stopwords(lemmatized_text)
     return prepared_text
+
+def prepare_data():
+    df = pd.read_json('data.json')
+    df['readme_contents']= df.readme_contents.apply(prepare_text)
+    return df.dropna()
