@@ -126,7 +126,10 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
     2. Converts the DataFrame to a list of dictionaries
     3. Iterates over the list_of_dictionaries object using a list comprehension calling the `prep_readme` function on each dictionary
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
-    5. Returns the resultant DataFrame
+    5. Masks DataFrame to only include observations where the language is not null
+    6. Resets DataFrame index
+    7. Drops original index column
+    8. Returns the resultant DataFrame
     
     Parameters:
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
@@ -144,5 +147,14 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
 
     # convert list_of_dictionaries to DataFrame
     df = pd.DataFrame(list_of_dictionaries)
+
+    # mask DataFrame to only include observations where the language is not null
+    df = df[df.language.isna() == False]
+
+    # reset DataFrame index
+    df.reset_index(inplace=True)
+
+    # drop original index column
+    df.drop(columns=["index"], inplace=True)
 
     return df
