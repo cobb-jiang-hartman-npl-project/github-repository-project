@@ -10,11 +10,11 @@ Build a model that can predict the programming language of a repository given th
 Repository data scraped from GitHub.
 
 ### Data Dictionary
-repo: the name of the GitHub repository
-language: the primary language the GitHub repository
-readme_contents: the original contents of the README file
-clean_readme_contents: the cleaned contents of the README file used in analysis and modeling
-len_of_clean_readme_contents: length of the clean lemmas in the clean_readme_contents feature
+- **repo**: the name of the GitHub repository
+- **language**: the primary language the GitHub repository
+- **readme_contents**: the original contents of the README file
+- **clean_readme_contents**: the cleaned contents of the README file used in analysis and modeling
+- **len_of_clean_readme_contents**: length of the clean lemmas in the clean_readme_contents feature
 
 ## Audience
 The audience for this project is the layperson.
