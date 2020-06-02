@@ -91,6 +91,19 @@ def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
 
     return lemmas_sans_stopwords, string_sans_stopwords
 
+def quantify_lemmas(lemmas_sans_stopwords):
+    """
+    This function does the following:
+    1. Takes in the list of lemmas_sans_stopwords returned from the remove_stopwords function
+    2. Quantifies the length of each readme in the form of the list of lemmas
+    3. Returns a list of integers representing the length of the lemmas
+    """
+
+    # quantify lemmas
+    len_of_clean_readme = len(lemmas_sans_stopwords)
+
+    return len_of_clean_readme
+
 def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     """
     This function accepts a dictionary representing a singular repository containing a readme, as specified 
@@ -110,6 +123,9 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     # running lemmatize function on readme_tokens
     readme_lemmas = lemmatize(readme_tokens)
     
+    # additional_stopwords variable
+    additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"]
+
     # running remove_stopwords on readme_lemmas
     lemmas_sans_stopwords, string_sans_stopwords = remove_stopwords(readme_lemmas, extra_stopwords=extra_stopwords, exclude_stopwords=exclude_stopwords)
     
@@ -117,7 +133,7 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     dictionary["clean_readme_contents"] = string_sans_stopwords
 
     # quantify lemmas
-
+    dictionary["len_of_clean_readme_contents"] = quantify_lemmas(lemmas_sans_stopwords)
     
     return dictionary
 
@@ -157,7 +173,7 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
     df = df[df.language.isna() == False]
 
     # remove outliers using mask
-
+    df = df[df.len_of_clean_readme_contents >= 10]
 
     # reset DataFrame index
     df.reset_index(inplace=True)
