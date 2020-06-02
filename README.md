@@ -30,5 +30,5 @@ The audience for this project is the layperson.
 ### Nice to Haves:
 1. GUI for model
 
-## Cloing
+## Cloning
 All files necessary for cloning and reproducing the work found in the final_project.ipynb file are contained within this repository.
