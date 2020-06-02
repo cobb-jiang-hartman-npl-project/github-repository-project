@@ -27,11 +27,11 @@ def split_repo_data(*arrays, test_size=.2, train_size=.8, random_state=56):
     """
     
     # call train_test_split on df
-    X_train, y_train, X_test, y_test = train_test_split(*arrays, test_size=test_size, train_size=train_size, random_state=random_state)
+    X_train, X_test, y_train, y_test = train_test_split(*arrays, test_size=test_size, train_size=train_size, random_state=random_state)
 
     # need to join X and y train for a singular train DataFrame if you want a validate split
 
     # call train_test_split on the train
     # train, validate = train_test_split(train, train_size=validate_size, random_state=random_state)
 
-    return X_train, y_train, X_test, y_test
+    return X_train, X_test, y_train, y_test
