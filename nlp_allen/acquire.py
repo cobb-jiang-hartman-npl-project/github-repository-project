@@ -57,7 +57,6 @@ def create_list_of_repos(number_of_pages:int):
     repos = remove_first_slash(repos)
     return repos   
 
-
 headers = {"Authorization": f"token {github_token}", "User-Agent": github_username}
 
 if headers["Authorization"] == "token " or headers["User-Agent"] == "":
@@ -116,7 +115,11 @@ def process_repo(repo: str) -> Dict[str, str]:
     dictionary with the language of the repo and the readme contents.
     """
     contents = get_repo_contents(repo)
-    readme_contents = requests.get(get_readme_download_url(contents)).text
+    readme_download_url = get_readme_download_url(contents)
+    if readme_download_url == "":
+        readme_contents = None
+    else:
+        readme_contents = requests.get(readme_download_url).text
     return {
         "repo": repo,
         "language": get_repo_language(repo),
@@ -132,6 +135,6 @@ def scrape_github_data() -> List[Dict[str, str]]:
 
 
 if __name__ == "__main__":
-    REPOS =create_list_of_repos(30)
+    REPOS =create_list_of_repos(50)
     data = scrape_github_data()
     json.dump(data, open("data.json", "w"), indent=1)
