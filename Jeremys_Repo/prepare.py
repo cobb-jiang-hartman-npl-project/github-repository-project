@@ -12,7 +12,6 @@ import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 
-import og_acquire as og_ac
 import acquire as ac
 
 def basic_clean(string: str) -> str:
@@ -29,7 +28,7 @@ def basic_clean(string: str) -> str:
                 .decode("utf-8", "ignore")
     
     # replace anything that is not a letter, number, whitespace or a single quote.
-    string = re.sub(r"[^a-z0-9\s]", "", string)
+    string = re.sub(r"[^a-z0-9\s']", "", string)
     
     return string
 
@@ -64,7 +63,7 @@ def lemmatize(list_of_tokens: list) -> list:
 
 def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
     """
-    This function accepts a list of strings (lemmas) and returns a list after removing stopwords.
+    This function accepts a list of strings (lemmas) and returns a list and string after removing stopwords.
     Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
     """
@@ -92,6 +91,19 @@ def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
 
     return lemmas_sans_stopwords, string_sans_stopwords
 
+def quantify_lemmas(lemmas_sans_stopwords):
+    """
+    This function does the following:
+    1. Takes in the list of lemmas_sans_stopwords returned from the remove_stopwords function
+    2. Quantifies the length of each readme in the form of the list of lemmas
+    3. Returns a list of integers representing the length of the lemmas
+    """
+
+    # quantify lemmas
+    len_of_clean_readme = len(lemmas_sans_stopwords)
+
+    return len_of_clean_readme
+
 def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     """
     This function accepts a dictionary representing a singular repository containing a readme, as specified 
@@ -116,21 +128,30 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     
     # creating cleaned column in dictionary
     dictionary["clean_readme_contents"] = string_sans_stopwords
+
+    # quantify lemmas
+    dictionary["len_of_clean_readme_contents"] = quantify_lemmas(lemmas_sans_stopwords)
     
     return dictionary
 
-def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
+def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"], exclude_stopwords=[]):
     """
     This function does the following:
     1. Reads the data.json file into a pandas DataFrame
     2. Converts the DataFrame to a list of dictionaries
     3. Iterates over the list_of_dictionaries object using a list comprehension calling the `prep_readme` function on each dictionary
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
-    5. Returns the resultant DataFrame
+    5. Masks DataFrame to only include observations where the language is not null
+    6. Masks DataFrame to exclude lower outliers
+    7. Resets DataFrame index
+    8. Drops original index column
+    9. Returns the resultant DataFrame
     
     Parameters:
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     exclude_stopwords: Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
+
+    TODO: Write resultant DataFrame to disk
     """
     
     # read data.json into a DataFrame
@@ -144,5 +165,17 @@ def wrangle_readme_data(extra_stopwords=[], exclude_stopwords=[]):
 
     # convert list_of_dictionaries to DataFrame
     df = pd.DataFrame(list_of_dictionaries)
+
+    # mask DataFrame to only include observations where the language is not null
+    df = df[df.language.isna() == False]
+
+    # remove outliers using mask
+    df = df[df.len_of_clean_readme_contents >= 10]
+
+    # reset DataFrame index
+    df.reset_index(inplace=True)
+
+    # drop original index column
+    df.drop(columns=["index"], inplace=True)
 
     return df
