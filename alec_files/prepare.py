@@ -86,7 +86,7 @@ def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
         stopword_list = [word for word in stopword_list if word not in exclude_stopwords]
     
     # list comprehension 
-    lemmas_sans_stopwords = [word for word in lemmas if word not in stopword_list if len(word) < 2]
+    lemmas_sans_stopwords = [word for word in lemmas if word not in stopword_list if len(word) > 1]
 
     # join lemmas_or_stems_sans_stopwords to whitespace to return a cohesive string
     string_sans_stopwords = " ".join(lemmas_sans_stopwords)
