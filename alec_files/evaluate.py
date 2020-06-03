@@ -31,22 +31,23 @@ def evaluate(model_object, X, y):
     
     return accuracy
 
-def append_evaluation(df, model_type, model_object, X, y, ):
+def append_evaluation(df, model_type, model_object, X_train, y_train, X_test, y_test):
     """
     This function does the following:
     1. Calls the evaluation function on the specified model_object, X, and y
-    2. Creates a dictionary with the model type and accuracy score of the model
+    2. Creates a dictionary with the model type and accuracy scores of the model
     3. Creates a new_evaluation DataFrame out of the dictionary created in the previous step
     4. Returns the evaluation DataFrame with the appended new_evaluation
 
     NOTE: This function assumes the existance of a DataFrame name `evaluation`
     """
     
-    # calling evaluate function to calculate the RMSE of the model
-    accuracy = evaluate(model_object, X, y)
+    # calling evaluate function to calculate the accuracy of the model
+    train_accuracy = evaluate(model_object, X_train, y_train)
+    test_accuracy = evaluate(model_object, X_test, y_test)
     
     # creating dictionary with model specification and evaluation metric
-    dictionary = {"model_type": [model_type], "accuracy": accuracy}
+    dictionary = {"model_type": [model_type], "train_accuracy": train_accuracy, "test_accuracy": test_accuracy}
     
     # creating a DataFrame from the dictionary above
     new_evaluation = pd.DataFrame(dictionary)

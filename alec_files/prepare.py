@@ -12,6 +12,9 @@ import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 
+import os.path
+from os import path
+
 import acquire as ac
 
 additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg", "td", "src"]
@@ -139,7 +142,7 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
 def wrangle_readme_data(extra_stopwords=additional_stopwords, exclude_stopwords=[]):
     """
     This function does the following:
-    1. Reads the data.json file into a pandas DataFrame
+    1. Conditionally reads existing csv of the data or the original data.json file into a pandas DataFrame
     2. Converts the DataFrame to a list of dictionaries
     3. Iterates over the list_of_dictionaries object using a list comprehension calling the `prep_readme` function on each dictionary
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
@@ -153,35 +156,39 @@ def wrangle_readme_data(extra_stopwords=additional_stopwords, exclude_stopwords=
     Parameters:
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
     exclude_stopwords: Words can be excluded from the standard english stopwords using the exclude_stopwords parameter.
-
-    TODO: Write resultant DataFrame to disk
     """
-    
-    # read data.json into a DataFrame
-    df = pd.read_json("data.json")
 
-    # convert DataFrame to a list of dictionaries
-    list_of_dictionaries = df.to_dict("records")
+    if path.exists("github_repo_data.csv"):
+        df = pd.read_csv("github_repo_data.csv", index_col=0)
+    else:    
+        # read data.json into a DataFrame
+        df = pd.read_json("data.json")
 
-    # list comprehension applying prep_article function to each dictionary
-    list_of_dictionaries = [prep_readme(dictionary, key="readme_contents", extra_stopwords=extra_stopwords, exclude_stopwords=exclude_stopwords) for dictionary in list_of_dictionaries]
+        # convert DataFrame to a list of dictionaries
+        list_of_dictionaries = df.to_dict("records")
 
-    # convert list_of_dictionaries to DataFrame
-    df = pd.DataFrame(list_of_dictionaries)
+        # list comprehension applying prep_article function to each dictionary
+        list_of_dictionaries = [prep_readme(dictionary, key="readme_contents", extra_stopwords=extra_stopwords, exclude_stopwords=exclude_stopwords) for dictionary in list_of_dictionaries]
 
-    # mask DataFrame to only include observations where the language is not null
-    df = df[df.language.isna() == False]
+        # convert list_of_dictionaries to DataFrame
+        df = pd.DataFrame(list_of_dictionaries)
 
-    # remove outliers using mask
-    df = df[df.len_of_clean_readme_contents >= 10]
+        # mask DataFrame to only include observations where the language is not null
+        df = df[df.language.isna() == False]
 
-    # use lambda function to exclude languages with only one observation in order to properly stratify
-    df = df.groupby('language').filter(lambda x : len(x) >= 2)
+        # remove outliers using mask
+        df = df[df.len_of_clean_readme_contents >= 10]
 
-    # reset DataFrame index
-    df.reset_index(inplace=True)
+        # use lambda function to exclude languages with only one observation in order to properly stratify
+        df = df.groupby('language').filter(lambda x : len(x) >= 2)
 
-    # drop original index column
-    df.drop(columns=["index"], inplace=True)
+        # reset DataFrame index
+        df.reset_index(inplace=True)
+
+        # drop original index column
+        df.drop(columns=["index"], inplace=True)
+
+        # write to disk
+        df.to_csv("github_repo_data.csv")
 
     return df
