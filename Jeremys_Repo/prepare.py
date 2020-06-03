@@ -14,6 +14,8 @@ from nltk.corpus import stopwords
 
 import acquire as ac
 
+additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg", "td", "src"]
+
 def basic_clean(string: str) -> str:
     """
     This function accepts a string and returns the string after applying some basic text cleaning to each word.
@@ -27,8 +29,8 @@ def basic_clean(string: str) -> str:
                 .encode("ascii", "ignore")\
                 .decode("utf-8", "ignore")
     
-    # replace anything that is not a letter, number, whitespace or a single quote.
-    string = re.sub(r"[^a-z0-9\s']", "", string)
+    # replace anything that is not a letter or whitespace
+    string = re.sub(r"[^a-z\s]", " ", string)
     
     return string
 
@@ -84,7 +86,7 @@ def remove_stopwords(lemmas, extra_stopwords=[], exclude_stopwords=[]):
         stopword_list = [word for word in stopword_list if word not in exclude_stopwords]
     
     # list comprehension 
-    lemmas_sans_stopwords = [word for word in lemmas if word not in stopword_list]
+    lemmas_sans_stopwords = [word for word in lemmas if word not in stopword_list if len(word) > 1]
 
     # join lemmas_or_stems_sans_stopwords to whitespace to return a cohesive string
     string_sans_stopwords = " ".join(lemmas_sans_stopwords)
@@ -130,11 +132,11 @@ def prep_readme(dictionary, key, extra_stopwords=[], exclude_stopwords=[]):
     dictionary["clean_readme_contents"] = string_sans_stopwords
 
     # quantify lemmas
-    dictionary["len_of_clean_readme_contents"] = quantify_lemmas(lemmas_sans_stopwords)
+    dictionary["len_of_clean_readme_contents"] = len(lemmas_sans_stopwords)
     
     return dictionary
 
-def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown"], exclude_stopwords=[]):
+def wrangle_readme_data(extra_stopwords=additional_stopwords, exclude_stopwords=[]):
     """
     This function does the following:
     1. Reads the data.json file into a pandas DataFrame
@@ -143,9 +145,10 @@ def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "h
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
     5. Masks DataFrame to only include observations where the language is not null
     6. Masks DataFrame to exclude lower outliers
-    7. Resets DataFrame index
-    8. Drops original index column
-    9. Returns the resultant DataFrame
+    7. Use lambda function to exclude languages with only one observation
+    8. Resets DataFrame index
+    9. Drops original index column
+    10. Returns the resultant DataFrame
     
     Parameters:
     extra_stopwords: Extra words can be added the standard english stopwords using the extra_stopwords parameter.
@@ -171,6 +174,9 @@ def wrangle_readme_data(extra_stopwords=["img", "1", "yes", "see", "width20", "h
 
     # remove outliers using mask
     df = df[df.len_of_clean_readme_contents >= 10]
+
+    # use lambda function to exclude languages with only one observation in order to properly stratify
+    df = df.groupby('language').filter(lambda x : len(x) >= 2)
 
     # reset DataFrame index
     df.reset_index(inplace=True)
