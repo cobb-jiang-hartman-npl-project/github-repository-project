@@ -29,8 +29,8 @@ def basic_clean(string: str) -> str:
                 .encode("ascii", "ignore")\
                 .decode("utf-8", "ignore")
     
-    # replace anything that is not a letter, number, whitespace or a single quote.
-    string = re.sub(r"[^a-z0-9\s']", " ", string)
+    # replace anything that is not a letter or whitespace
+    string = re.sub(r"[^a-z\s]", " ", string)
     
     return string
 
