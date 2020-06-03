@@ -14,7 +14,7 @@ from nltk.corpus import stopwords
 
 import acquire as ac
 
-additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg"]
+additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg", "td", "src"]
 
 def basic_clean(string: str) -> str:
     """

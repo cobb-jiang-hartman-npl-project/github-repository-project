@@ -103,8 +103,8 @@ def predict_language(string: str) -> str:
     list_of_lemmas = pr.lemmatize(list_of_tokens)
 
     # additional_stopwords variable
-    additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg"]
-    
+    additional_stopwords = ["img", "1", "yes", "see", "width20", "height20", "okay_icon", "unknown", "http", "org", "com", "www", "md", "doc", "github", "svg", "td", "src"]
+
     # call pr.remove_stopwords
     lemmas_sans_stopwords, string_sans_stopwords = pr.remove_stopwords(list_of_lemmas, extra_stopwords=additional_stopwords, exclude_stopwords=[])
 
