@@ -26,7 +26,6 @@ The audience for this project is the layperson.
 2. A well-documented jupyter notebook that contains our analysis
 3. Presentation summarizing our findings
 
-
 ### Nice to Haves:
 1. GUI for model
 
