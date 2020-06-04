@@ -148,7 +148,7 @@ def wrangle_readme_data(extra_stopwords=additional_stopwords, exclude_stopwords=
     4. Converts the list of dictionaries produced by the list comprehension to a pandas DataFrame
     5. Masks DataFrame to only include observations where the language is not null
     6. Masks DataFrame to exclude lower outliers
-    7. Use lambda function to exclude languages with only one observation
+    7. Uses lambda function to exclude languages with only one observation
     8. Resets DataFrame index
     9. Drops original index column
     10. Returns the resultant DataFrame
