@@ -60,13 +60,13 @@ def create_and_fit_model(features, target):
     """    
 
     # create model object
-    logit = LogisticRegression(random_state=56)
+    tree = DecisionTreeClassifier(criterion="entropy", max_depth=4, random_state=56)
 
     # fit model object
-    logit.fit(features, target)
+    tree.fit(features, target)
     
     # return model object to be used later to predict
-    return logit
+    return tree
 
 def predict_language(string: str) -> str:
     """
