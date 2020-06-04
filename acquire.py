@@ -31,7 +31,7 @@ from env import github_token, github_username
 
 def get_repo_names_from_one_page(url):
     """
-    This function finds all titles of repositories from the given url and returns the name of the repo 
+    This function inspect and search one searching page and get all repo names of the page. 
     """
 
     # establish headers for webscraping
@@ -57,7 +57,9 @@ def get_repo_names_from_one_page(url):
 
 def get_repos(number_of_pages: int) -> list:
     """
-    This function scrapes through the number of pages given as a parameter and returns the GitHub repositories
+    This function loop through several search pages to get all the repo names, 
+    there is a access rate limit from github, so in this funtion added a sleeper to slower down 
+    the access rate.
     """
 
     # empty repo list
